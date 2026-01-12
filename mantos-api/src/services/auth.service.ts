@@ -6,8 +6,9 @@ import { compare } from 'bcrypt';
 import Container, { Service } from 'typedi';
 import { sign } from 'jsonwebtoken';
 import { UserRequest, UserBlaster } from '@/interfaces/users.interface';
-import { LdapClient } from '@/ldap/ldapClient';
+import { ExternalAuthClient } from '@/api/externalAuth.client';
 import { UserService } from './users.service';
+import { logger } from '@/utils/logger';
 
 type ResponseLogInLdap = { cookie: string; user: UserRequest; token: string } | { ldap: true };
 @Service()
@@ -29,28 +30,46 @@ export class AuthService {
   }
 
   public async logInLdap(dto: LogInDto): Promise<ResponseLogInLdap> {
-    const client = new LdapClient(dto.username, dto.password);
+    const client = new ExternalAuthClient();
 
-    const mantis = await client.GetMantisToken(); // la fonction va throw une exception en cas d'erreur gérée dans le controller
+    // Étape 1: Authentification via l'API externe
+    try {
+      const externalToken = await client.authenticate(dto.username, dto.password);
+      logger.info(`[AuthService] External authentication successful for user: ${dto.username}`);
 
-    let findUser = await this.userService.findBlastUser({ username: dto.username });
+      // Étape 2: Récupération du token Mantis
+      const mantisToken = await client.getMantisToken(dto.username, externalToken);
 
-    if (!findUser) {
-      if (mantis.token) {
-        // sur le ldap il y a pas de mantis token donc je vais créer l'user
-        findUser = await this.userService.createUser({ username: dto.username, password: dto.password, token: mantis.token });
+      // Étape 3: Vérifier si l'utilisateur existe dans notre base Blaster
+      let findUser = await this.userService.findBlastUser({ username: dto.username });
+
+      if (!findUser) {
+        if (mantisToken) {
+          // L'utilisateur n'existe pas mais a un token Mantis, on le crée
+          logger.info(`[AuthService] Creating new user ${dto.username} with Mantis token`);
+          findUser = await this.userService.createUser({ username: dto.username, password: dto.password, token: mantisToken });
+        } else {
+          // L'utilisateur n'existe pas et n'a pas de token Mantis
+          // Il faudra proposer sa création dans l'app
+          logger.warn(`[AuthService] User ${dto.username} authenticated but has no Mantis token`);
+          return { ldap: true };
+        }
       } else {
-        // il faudra proposer sa création dans l'app car le token n'existe nulle part
-        return { ldap: true };
+        // L'utilisateur existe déjà dans notre base
+        // On peut optionnellement mettre à jour le token Mantis s'il a changé
+        if (mantisToken && findUser.token !== mantisToken) {
+          logger.info(`[AuthService] Updating Mantis token for user ${dto.username}`);
+          // Optionnel: mettre à jour le token dans la base
+          // await this.userService.updateUserToken(findUser.id, mantisToken);
+        }
       }
-    } else {
-      // l'utilisateur existe donc je pars du principe qu'il a un token
-      if (!mantis.token) {
-        // je pourrais créer le token dans le ldap, mais pour l'instant je ne vais pas le faire
-      }
-    }
 
-    return this._logUserIn(findUser);
+      // Étape 4: Générer notre propre JWT Mantos et connecter l'utilisateur
+      return this._logUserIn(findUser);
+    } catch (error) {
+      logger.error(`[AuthService] External authentication failed for user ${dto.username}: ${error.message}`);
+      throw error;
+    }
   }
 
   private async _logUserIn(findUser: UserBlaster): Promise<{ cookie: string; user: UserRequest; token: string }> {

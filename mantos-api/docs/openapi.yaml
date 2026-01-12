@@ -1,0 +1,909 @@
+openapi: 3.0.3
+info:
+  title: Mantos API
+  description: |
+    API REST wrapper et extension pour MantisBT (système de suivi de bugs).
+
+    Fournit des endpoints REST, support WebSocket, et gère deux bases de données (MySQL Mantis + PostgreSQL Mantos).
+
+    ## Authentification
+
+    Utilise JWT Bearer tokens. Obtenez un token via `POST /auth/login`.
+
+    ## Architecture
+
+    - **Mantis DB (MySQL)**: Lecture seule, données MantisBT existantes
+    - **Mantos DB (PostgreSQL)**: Données propriétaires (users, tokens, versions, assemblies)
+
+  version: 1.0.1
+  contact:
+    name: Mantos API Support
+  license:
+    name: ISC
+
+servers:
+  - url: http://localhost:3000
+    description: Serveur de développement
+  - url: https://api.mantos.example.com
+    description: Serveur de production
+
+tags:
+  - name: Authentication
+    description: Endpoints d'authentification et autorisation
+  - name: Users
+    description: Gestion des utilisateurs
+  - name: Issues
+    description: Gestion des issues/bugs MantisBT
+  - name: Projects
+    description: Gestion des projets
+  - name: Tags
+    description: Tags pour les issues
+  - name: Changelogs
+    description: Génération de changelogs
+  - name: Assembly
+    description: Informations d'assemblies (Admin)
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT obtenu via /auth/login
+
+  schemas:
+    Error:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Validation failed"
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+        - ldap
+      properties:
+        username:
+          type: string
+          example: "john.doe"
+        password:
+          type: string
+          format: password
+          example: "password123"
+        ldap:
+          type: boolean
+          example: true
+          description: "Si true, utilise l'authentification externe. Si false, utilise l'auth locale."
+
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserInfo'
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "john.doe"
+        token:
+          type: string
+          description: "Token API Mantis"
+          example: "mantis_token_abc123"
+        theme:
+          type: string
+          enum: [Clair, Sombre]
+          example: "Clair"
+        isAdmin:
+          type: boolean
+          example: false
+        mantis:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 123
+                name:
+                  type: string
+                  example: "John Doe"
+
+    CreateUserRequest:
+      type: object
+      required:
+        - username
+        - password
+        - token
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+        token:
+          type: string
+          description: "Token API Mantis"
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        theme:
+          type: string
+          enum: [Clair, Sombre]
+        password:
+          type: string
+          format: password
+
+    Issue:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1234
+        summary:
+          type: string
+          example: "Bug dans la fonctionnalité X"
+        description:
+          type: string
+        project:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        status:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        priority:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        severity:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        reporter:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        handler:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        notes:
+          type: array
+          items:
+            type: object
+
+    CreateIssueRequest:
+      type: object
+      required:
+        - summary
+        - description
+        - project
+        - category
+      properties:
+        summary:
+          type: string
+        description:
+          type: string
+        project:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+        category:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+        priority:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 30
+        severity:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 50
+        additional_information:
+          type: string
+
+    AttachNoteRequest:
+      type: object
+      required:
+        - text
+        - view_state
+      properties:
+        text:
+          type: string
+        view_state:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              enum: [10, 50]
+              description: "10=public, 50=private"
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        enabled:
+          type: boolean
+        view_state:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        description:
+          type: string
+
+    ProjectVersion:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: "v2.5.0"
+        description:
+          type: string
+        released:
+          type: boolean
+        obsolete:
+          type: boolean
+        timestamp:
+          type: string
+          format: date-time
+
+    NewVersionRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "v2.5.0"
+        description:
+          type: string
+        released:
+          type: boolean
+          default: false
+        obsolete:
+          type: boolean
+          default: false
+        timestamp:
+          type: string
+          format: date-time
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: "urgent"
+
+    AssemblyInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: "MyApp"
+        extension:
+          type: string
+          example: "exe"
+        path:
+          type: string
+          example: "C:\\Program Files\\MyApp\\MyApp.exe"
+        checksum:
+          type: string
+        fdate:
+          type: string
+          format: date-time
+        version:
+          type: string
+          example: "2.5.0.1234"
+        createdAt:
+          type: string
+          format: date-time
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Connexion utilisateur
+      description: |
+        Authentifie un utilisateur via l'API externe (LDAP) ou en local.
+
+        **Flux avec ldap=true:**
+        1. Mantos contacte l'API externe avec {uid, password}
+        2. API externe retourne un JWT
+        3. Mantos récupère le token Mantis
+        4. Mantos génère son propre JWT
+
+        **Flux avec ldap=false:**
+        1. Vérification locale du username/password
+        2. Génération du JWT Mantos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentification réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '403':
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: API externe inaccessible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/admin/token:
+    post:
+      tags:
+        - Authentication
+      summary: Obtenir token administrateur
+      description: Génère un token avec privilèges admin (usage interne)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Token admin généré
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Credentials invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/me:
+    get:
+      tags:
+        - Users
+      summary: Informations utilisateur connecté
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Informations utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Créer un utilisateur
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: Utilisateur créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '400':
+          description: Validation échouée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      tags:
+        - Users
+      summary: Mettre à jour utilisateur connecté
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: Utilisateur mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+
+  /issues:
+    get:
+      tags:
+        - Issues
+      summary: Liste des issues
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: project_id
+          in: query
+          schema:
+            type: integer
+        - name: filter_id
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des issues
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  issues:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Issue'
+
+    post:
+      tags:
+        - Issues
+      summary: Créer une issue
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIssueRequest'
+      responses:
+        '201':
+          description: Issue créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+
+  /issues/{issue_id}:
+    get:
+      tags:
+        - Issues
+      summary: Détails d'une issue
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: issue_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détails de l'issue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+        '404':
+          description: Issue non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      tags:
+        - Issues
+      summary: Mettre à jour une issue
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: issue_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Champs à mettre à jour (partiel)
+      responses:
+        '200':
+          description: Issue mise à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issue'
+
+  /issues/{issue_id}/notes:
+    post:
+      tags:
+        - Issues
+      summary: Ajouter une note à une issue
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: issue_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachNoteRequest'
+      responses:
+        '201':
+          description: Note ajoutée
+
+  /projects:
+    get:
+      tags:
+        - Projects
+      summary: Liste des projets
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Liste des projets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+
+  /projects/{project_id}/versions:
+    get:
+      tags:
+        - Projects
+      summary: Versions d'un projet
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des versions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  versions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectVersion'
+
+    post:
+      tags:
+        - Projects
+      summary: Créer une version
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewVersionRequest'
+      responses:
+        '201':
+          description: Version créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectVersion'
+
+  /tags:
+    get:
+      tags:
+        - Tags
+      summary: Liste des tags
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Liste des tags
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+
+  /changelogs:
+    get:
+      tags:
+        - Changelogs
+      summary: Générer changelog Markdown
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: project_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: version
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: previous_version
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Changelog en Markdown
+          content:
+            text/markdown:
+              schema:
+                type: string
+                example: |
+                  # Version 2.5.0
+
+                  ## Nouvelles fonctionnalités
+                  - [#1234] Ajout fonctionnalité X
+
+  /changelogs/html:
+    post:
+      tags:
+        - Changelogs
+      summary: Convertir Markdown en HTML
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - markdown
+              properties:
+                markdown:
+                  type: string
+      responses:
+        '200':
+          description: HTML généré
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /assembly:
+    get:
+      tags:
+        - Assembly
+      summary: Informations assemblies
+      description: Nécessite droits admin ou authentification
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: project_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: version
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste des assemblies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assemblies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AssemblyInfo'
+
+    post:
+      tags:
+        - Assembly
+      summary: Créer assembly info
+      description: Nécessite droits admin
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - projectId
+                - version
+                - assemblies
+              properties:
+                projectId:
+                  type: integer
+                version:
+                  type: string
+                assemblies:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - extension
+                      - path
+                      - checksum
+                      - fdate
+                      - version
+                    properties:
+                      name:
+                        type: string
+                      extension:
+                        type: string
+                      path:
+                        type: string
+                      checksum:
+                        type: string
+                      fdate:
+                        type: string
+                        format: date-time
+                      version:
+                        type: string
+      responses:
+        '201':
+          description: Assembly créé
+        '403':
+          description: Droits admin requis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
