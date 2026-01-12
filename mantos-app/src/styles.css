@@ -1,0 +1,7 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Tailwind CSS */
+@import "tailwindcss";
+
+/* PrimeNG Theme (Aura) */
+@import "primeicons/primeicons.css";
