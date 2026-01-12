@@ -4,6 +4,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+import { MessageService } from 'primeng/api';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -29,6 +30,7 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: '.dark-theme', // Pour le thème sombre
         }
       }
-    })
+    }),
+    MessageService // Global MessageService for Toast notifications
   ]
 };

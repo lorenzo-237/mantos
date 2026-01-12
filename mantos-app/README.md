@@ -51,18 +51,21 @@ src/app/
 ### Services principaux créés
 
 ✅ **AuthService** (`core/auth/auth.service.ts`)
+
 - `login(credentials)` - Authentification (local/LDAP)
 - `logout()` - Déconnexion
 - `isAuthenticated()` / `isAdmin()` - Vérifications
 - `currentUser` - Signal Angular pour l'utilisateur connecté
 
 ✅ **ApiService** (`core/api/api.service.ts`)
+
 - `get<T>(endpoint, params?)` - GET request
 - `post<T>(endpoint, body)` - POST request
 - `patch<T>(endpoint, body)` - PATCH request
 - `delete<T>(endpoint)` - DELETE request
 
 ✅ **WebsocketService** (`core/websocket/websocket.service.ts`)
+
 - `connect()` / `disconnect()` - Gestion connexion Socket.IO
 - `onUpdateIssue()` / `onAddVersion()` / `onUpdateVues()` - Observables events
 - `emitUpdateIssue()` / `emitAddVersion()` - Émettre des events
@@ -93,6 +96,7 @@ Config dans `tailwind.config.js` avec couleurs personnalisées et `preflight: fa
 Thème **Aura** configuré dans `app.config.ts`.
 
 Composants recommandés:
+
 - **Table** / **DataTable** - Listes
 - **Button** - Boutons
 - **Dialog** - Modals
@@ -183,6 +187,7 @@ Le token JWT est ajouté automatiquement via `tokenInterceptor`.
 ### Environments
 
 **Dev** (`environments/environment.ts`):
+
 ```typescript
 {
   production: false,
@@ -192,6 +197,7 @@ Le token JWT est ajouté automatiquement via `tokenInterceptor`.
 ```
 
 **Prod** (`environments/environment.prod.ts`):
+
 ```typescript
 {
   production: true,
@@ -226,29 +232,32 @@ npm run lint:fix       # Corriger automatiquement
 
 ## 📚 Documentation
 
-- **API Backend**: [../mantos-api/docs/API_DOCUMENTATION.md](../mantos-api/docs/API_DOCUMENTATION.md)
-- **OpenAPI**: [../mantos-api/docs/openapi.yaml](../mantos-api/docs/openapi.yaml)
-- **Cahier des charges complet**: [../mantos-api/docs/ANGULAR_REQUIREMENTS_TEMPLATE.md](../mantos-api/docs/ANGULAR_REQUIREMENTS_TEMPLATE.md)
+- **API Backend**: [../docs/API_DOCUMENTATION.md](../docs/API_DOCUMENTATION.md)
+- **OpenAPI**: [../docs/openapi.yaml](../docs/openapi.yaml)
+- **Cahier des charges complet**: [../docs/ANGULAR_REQUIREMENTS_TEMPLATE.md](../docs/ANGULAR_REQUIREMENTS_TEMPLATE.md)
 
 ---
 
 ## 🎯 Prochaines étapes (MVP)
 
 ### Sprint 1 - Setup & Auth
+
 - [ ] Page de login (PrimeNG formulaire)
 - [ ] Layout (header + sidebar + router-outlet)
 - [ ] Dashboard vide
 
 ### Sprint 2-3 - Issues
+
 - [ ] Liste des issues (PrimeNG Table)
 - [ ] Détail d'une issue
 - [ ] Filtres de base
 
 ### Sprint 4 - Projets
+
 - [ ] Liste des projets
 - [ ] Détail avec onglets (versions, issues, etc.)
 
-Voir [ANGULAR_REQUIREMENTS_TEMPLATE.md](../mantos-api/docs/ANGULAR_REQUIREMENTS_TEMPLATE.md) pour le plan complet.
+Voir [ANGULAR_REQUIREMENTS_TEMPLATE.md](../docs/ANGULAR_REQUIREMENTS_TEMPLATE.md) pour le plan complet.
 
 ---
 

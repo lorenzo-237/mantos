@@ -1,4 +1,5 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { ApiService } from '../api/api.service';
@@ -13,6 +14,8 @@ const USER_KEY = 'mantos_user';
 export class AuthService {
   private apiService = inject(ApiService);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   // Signal pour l'utilisateur connecté
   currentUser = signal<UserInfo | null>(this.getUserFromStorage());
@@ -34,8 +37,10 @@ export class AuthService {
    * Se déconnecter
    */
   logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    if (this.isBrowser) {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+    }
     this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
@@ -44,6 +49,9 @@ export class AuthService {
    * Récupérer le token JWT
    */
   getToken(): string | null {
+    if (!this.isBrowser) {
+      return null;
+    }
     return localStorage.getItem(TOKEN_KEY);
   }
 
@@ -51,20 +59,27 @@ export class AuthService {
    * Sauvegarder le token
    */
   private setToken(token: string): void {
-    localStorage.setItem(TOKEN_KEY, token);
+    if (this.isBrowser) {
+      localStorage.setItem(TOKEN_KEY, token);
+    }
   }
 
   /**
    * Sauvegarder l'utilisateur
    */
   private setUser(user: UserInfo): void {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    if (this.isBrowser) {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    }
   }
 
   /**
    * Récupérer l'utilisateur depuis le storage
    */
   private getUserFromStorage(): UserInfo | null {
+    if (!this.isBrowser) {
+      return null;
+    }
     const userStr = localStorage.getItem(USER_KEY);
     return userStr ? JSON.parse(userStr) : null;
   }

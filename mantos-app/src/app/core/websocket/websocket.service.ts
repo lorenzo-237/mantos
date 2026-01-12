@@ -1,4 +1,5 @@
-import { Injectable, inject, OnDestroy } from '@angular/core';
+import { Injectable, inject, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { io, Socket } from 'socket.io-client';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -26,6 +27,8 @@ export interface UpdateVuesEvent {
 })
 export class WebsocketService implements OnDestroy {
   private authService = inject(AuthService);
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
   private socket: Socket | null = null;
   private connected = false;
 
@@ -38,6 +41,11 @@ export class WebsocketService implements OnDestroy {
    * Connecter au WebSocket
    */
   connect(): void {
+    // WebSocket ne doit se connecter que dans le navigateur
+    if (!this.isBrowser) {
+      return;
+    }
+
     if (this.connected) {
       return;
     }
