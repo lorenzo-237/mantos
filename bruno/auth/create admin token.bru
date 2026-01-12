@@ -1,0 +1,19 @@
+meta {
+  name: create admin token
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3077/auth/admin/token
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "wqt",
+    "password": "animal-aquatique-nocturne",
+    "ldap": true
+  }
+}

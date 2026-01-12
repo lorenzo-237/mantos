@@ -1,0 +1,19 @@
+meta {
+  name: create package
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3076/packages
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "version": "2.4.3.166",
+    "html": "<h1 id=note-de-version-243166>Note de version 2.4.3.166</h1><div class=info><ul style=list-style:none;margin:0;padding:0><li><strong>timestamp: </strong>22/02/2024 11:27<li><strong>composant_sv: </strong>3.0.0.88<li><strong>fsv: </strong>fsv-1.40.1408_x86.msi<li><strong>galss: </strong>galss-3.45.01.exe<li><strong>cryptolib: </strong>CryptolibCPS-5.1.7.exe<li><strong>atsam: </strong>atsam-4.61.01.exe<li><strong>tbl_ccam: </strong>73100<li><strong>tbl_reglementaire: </strong>94<li><strong>hfsql: </strong>260101</li><ul></div>",
+    "project_id": 1
+  }
+}

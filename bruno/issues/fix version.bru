@@ -1,0 +1,19 @@
+meta {
+  name: fix version
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:3076/issues/2458
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "fixed_in_version": {
+      "name": "2.4.3.172"
+    }
+  }
+}

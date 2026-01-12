@@ -1,0 +1,70 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "./generated/blaster-cli"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_PG_URL")
+}
+
+model User {
+    id          Int           @id @default(autoincrement())
+    username    String        @unique
+    password    String
+    token       String
+    socket_id   String        @default("")
+    isAdmin     Boolean       @default(false)
+    theme       String        @default("Clair")
+    UserProject UserProject[]
+
+    @@map("users")
+}
+
+model UserProject {
+    user_id            Int
+    user               User   @relation(fields: [user_id], references: [id])
+    project_id         Int
+    lastVersionCreated String @default("")
+
+    @@unique([user_id, project_id])
+    @@map("users_projects")
+}
+
+model AdminToken {
+    id   Int    @id @default(autoincrement())
+    data String
+
+    @@map("admin_tokens")
+}
+
+model ProjectVersion {
+    id              Int            @id @default(autoincrement())
+    mantisProjectId Int
+    version         String
+    createdAt       DateTime       @default(now())
+    updatedAt       DateTime       @default(now()) @updatedAt()
+    infos           AssemblyInfo[]
+    obsolete        Boolean
+
+    @@unique([mantisProjectId, version])
+    @@map("projects_versions")
+}
+
+model AssemblyInfo {
+    id               Int            @id @default(autoincrement())
+    projectVersionId Int
+    projectVersion   ProjectVersion @relation(fields: [projectVersionId], references: [id])
+    name             String
+    extension        String
+    path             String
+    checksum         String
+    fdate            DateTime
+    version          String
+    createdAt        DateTime       @default(now())
+    updatedAt        DateTime       @default(now()) @updatedAt()
+
+    @@unique([projectVersionId, path])
+    @@index([name, extension, fdate])
+    @@map("assembly_info")
+}

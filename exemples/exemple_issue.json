@@ -1,0 +1,327 @@
+{
+  "issues": [
+    {
+      "id": 2437,
+      "summary": "[BUG] format caisse invalide entraine une FSE qui bloque la télétransmission des feuilles",
+      "description": "Lien AREA\r\nune FSE est réalisée avec l'organisme 01 000 0000 qui est invalide sur le réseau santé social. Aucune feuille ne peut être envoyée à 0100@rss.fr",
+      "steps_to_reproduce": "Une demande de feuille est faite depuis AREA sans préciser la caisse alors est passé à SV une demande sur la caisse 01 000 0000 dans le but d'appeler les ADRi et d'obtenir la bonne caisse. \r\nSauf que si l'appel n'est pas configuré sur systématique ou que l'appel n'aboutit pas une FSE est réalisée par SV sans contrôle\r\n\r\nIl faut rétablir l'écran de saisi de la caisse pour avoir une caisse valide (écran dégradé de medoc)\r\n\r\nChristophe doit corriger de son côté et rendre une fse impossible avec 01 000 000",
+      "project": {
+        "id": 1,
+        "name": "MED'OC"
+      },
+      "category": {
+        "id": 59,
+        "name": "PASSERELLE"
+      },
+      "version": {
+        "id": 415,
+        "name": "2.4.3.164"
+      },
+      "fixed_in_version": {
+        "id": 416,
+        "name": "2.4.3.166"
+      },
+      "target_version": {
+        "id": 416,
+        "name": "2.4.3.166"
+      },
+      "reporter": {
+        "id": 3,
+        "name": "dduplan"
+      },
+      "handler": {
+        "id": 43,
+        "name": "hlangenbronn"
+      },
+      "status": {
+        "id": 80,
+        "name": "resolved",
+        "label": "Résolu",
+        "color": "#d2f5b0"
+      },
+      "resolution": {
+        "id": 20,
+        "name": "fixed",
+        "label": "corrigé"
+      },
+      "view_state": {
+        "id": 10,
+        "name": "public",
+        "label": "public"
+      },
+      "priority": {
+        "id": 50,
+        "name": "urgent",
+        "label": "urgente"
+      },
+      "severity": {
+        "id": 80,
+        "name": "block",
+        "label": "bloquant"
+      },
+      "reproducibility": {
+        "id": 10,
+        "name": "always",
+        "label": "toujours"
+      },
+      "sticky": false,
+      "created_at": "2024-02-12T15:48:57+01:00",
+      "updated_at": "2024-02-22T11:16:14+01:00",
+      "notes": [
+        {
+          "id": 1682,
+          "reporter": {
+            "id": 43,
+            "name": "hlangenbronn"
+          },
+          "text": "Si on est en dégradée, on lance systématiquement la fenêtre de recherche du patient (celle avec le bouton dégradée). Ce qui permet d'obliger la complétion du code organisme s'il n'est pas renseigné.",
+          "view_state": {
+            "id": 10,
+            "name": "public",
+            "label": "public"
+          },
+          "attachments": [],
+          "type": "note",
+          "created_at": "2024-02-14T09:04:42+01:00",
+          "updated_at": "2024-02-14T09:04:42+01:00"
+        }
+      ],
+      "custom_fields": [
+        {
+          "field": {
+            "id": 2,
+            "name": "Sprint"
+          },
+          "value": ""
+        }
+      ],
+      "tags": [
+        {
+          "id": "7",
+          "name": "BUG"
+        }
+      ],
+      "history": [
+        {
+          "created_at": "2024-02-12T15:48:57+01:00",
+          "user": {
+            "id": 3,
+            "name": "dduplan"
+          },
+          "type": {
+            "id": 1,
+            "name": "issue-new"
+          },
+          "message": "Nouvelle anomalie"
+        },
+        {
+          "created_at": "2024-02-12T15:48:57+01:00",
+          "user": {
+            "id": 3,
+            "name": "dduplan"
+          },
+          "field": {
+            "name": "status",
+            "label": "État"
+          },
+          "type": {
+            "id": 0,
+            "name": "field-updated"
+          },
+          "old_value": {
+            "id": 10,
+            "name": "new",
+            "label": "Nouveau",
+            "color": "#fcbdbd"
+          },
+          "new_value": {
+            "id": 50,
+            "name": "assigned",
+            "label": "Affecté",
+            "color": "#c2dfff"
+          },
+          "message": "État",
+          "change": "Nouveau => Affecté"
+        },
+        {
+          "created_at": "2024-02-12T15:48:57+01:00",
+          "user": {
+            "id": 3,
+            "name": "dduplan"
+          },
+          "field": {
+            "name": "handler",
+            "label": "Assigné à"
+          },
+          "type": {
+            "id": 0,
+            "name": "field-updated"
+          },
+          "old_value": {
+            "id": 0
+          },
+          "new_value": {
+            "id": 43,
+            "name": "hlangenbronn"
+          },
+          "message": "Assigné à",
+          "change": " => hlangenbronn"
+        },
+        {
+          "created_at": "2024-02-14T09:04:41+01:00",
+          "user": {
+            "id": 43,
+            "name": "hlangenbronn"
+          },
+          "field": {
+            "name": "status",
+            "label": "État"
+          },
+          "type": {
+            "id": 0,
+            "name": "field-updated"
+          },
+          "old_value": {
+            "id": 50,
+            "name": "assigned",
+            "label": "Affecté",
+            "color": "#c2dfff"
+          },
+          "new_value": {
+            "id": 60,
+            "name": "waiting_customer_validation",
+            "label": "Traité",
+            "color": "#E0701A"
+          },
+          "message": "État",
+          "change": "Affecté => Traité"
+        },
+        {
+          "created_at": "2024-02-14T09:04:42+01:00",
+          "user": {
+            "id": 43,
+            "name": "hlangenbronn"
+          },
+          "type": {
+            "id": 2,
+            "name": "note-added"
+          },
+          "note": {
+            "id": 1682
+          },
+          "message": "Note ajoutée: 0001682"
+        },
+        {
+          "created_at": "2024-02-14T09:05:23+01:00",
+          "user": {
+            "id": 43,
+            "name": "hlangenbronn"
+          },
+          "field": {
+            "name": "summary",
+            "label": "Résumé"
+          },
+          "type": {
+            "id": 0,
+            "name": "field-updated"
+          },
+          "old_value": "format caisse invalide entraine une FSE qui bloque la télétransmission des feuilles",
+          "new_value": "[BUG] format caisse invalide entraine une FSE qui bloque la télétransmission des feuilles",
+          "message": "Résumé",
+          "change": "format caisse invalide entraine une FSE qui bloque la télétransmission des feuilles => [BUG] format caisse invalide entraine une FSE qui bloque la télétransmission des feuilles"
+        },
+        {
+          "created_at": "2024-02-14T09:06:38+01:00",
+          "user": {
+            "id": 43,
+            "name": "hlangenbronn"
+          },
+          "field": {
+            "name": "fixed_in_version",
+            "label": "Résolue dans la version"
+          },
+          "type": {
+            "id": 0,
+            "name": "field-updated"
+          },
+          "old_value": "",
+          "new_value": "2.4.3.166",
+          "message": "Résolue dans la version",
+          "change": " => 2.4.3.166"
+        },
+        {
+          "created_at": "2024-02-14T09:06:56+01:00",
+          "user": {
+            "id": 43,
+            "name": "hlangenbronn"
+          },
+          "type": {
+            "id": 25,
+            "name": "tag-added"
+          },
+          "tag": {
+            "id": "7",
+            "name": "BUG"
+          },
+          "message": "Balise attachée: BUG"
+        },
+        {
+          "created_at": "2024-02-22T11:16:14+01:00",
+          "user": {
+            "id": 21,
+            "name": "lmagni"
+          },
+          "field": {
+            "name": "status",
+            "label": "État"
+          },
+          "type": {
+            "id": 0,
+            "name": "field-updated"
+          },
+          "old_value": {
+            "id": 60,
+            "name": "waiting_customer_validation",
+            "label": "Traité",
+            "color": "#E0701A"
+          },
+          "new_value": {
+            "id": 80,
+            "name": "resolved",
+            "label": "Résolu",
+            "color": "#d2f5b0"
+          },
+          "message": "État",
+          "change": "Traité => Résolu"
+        },
+        {
+          "created_at": "2024-02-22T11:16:14+01:00",
+          "user": {
+            "id": 21,
+            "name": "lmagni"
+          },
+          "field": {
+            "name": "resolution",
+            "label": "Résolution"
+          },
+          "type": {
+            "id": 0,
+            "name": "field-updated"
+          },
+          "old_value": {
+            "id": 10,
+            "name": "open",
+            "label": "ouvert"
+          },
+          "new_value": {
+            "id": 20,
+            "name": "fixed",
+            "label": "corrigé"
+          },
+          "message": "Résolution",
+          "change": "ouvert => corrigé"
+        }
+      ]
+    }
+  ]
+}

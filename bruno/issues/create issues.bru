@@ -1,0 +1,41 @@
+meta {
+  name: create issues
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://localhost:3076/issues
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "summary": "Test Parent",
+    "description": "The application crashes immediately after launch.",
+    "steps": "1. Open the application\n2. Observe the crash",
+    "additional_information": "Occurs on all tested machines.",
+    "project_id": 1,
+    "status_id": 50, // ETAT_ASSIGNE 50
+    "category_id": 61,
+    "handler_id": 21,
+    "priority_id": 30,
+    "severity_id": 20,
+    "reproducibility_id": 10,
+    "resolution_id": 10,
+    "version": {
+      "current": "2.7.3.7",
+      "target": "2.7.3.8"
+    },
+    "tags": [
+      {
+        "id": 5
+      },
+      {
+        "id": 9
+      }
+    ],
+    "relations": []
+  }
+}

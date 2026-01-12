@@ -1,0 +1,20 @@
+meta {
+  name: create version
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/projects/1/versions
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "3.3.1.7",
+    "description": "Nouvelle version de Med'Oc",
+    "released": false,
+    "obsolete": false
+  }
+}

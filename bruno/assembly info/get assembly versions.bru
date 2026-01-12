@@ -1,0 +1,19 @@
+meta {
+  name: get assembly versions
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:3076/assembly/versions?project_id=1
+  body: none
+  auth: none
+}
+
+query {
+  project_id: 1
+}
+
+auth:bearer {
+  token: 
+}

@@ -1,0 +1,32 @@
+meta {
+  name: create assembly
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3077/assembly
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "project": {
+      "id": 1,
+      "version": "1.0.0.0"
+    },
+    "assemblies": [
+      {
+        "name": "install.exe",
+        "version": "1.0.0.0",
+        "checksum": "jdsfjdfjs"
+      },
+      {
+        "name": "install_maj.exe",
+        "version": "1.0.0.0",
+        "checksum": "kufhsks"
+      }
+    ]
+  }
+}

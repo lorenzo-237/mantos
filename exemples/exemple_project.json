@@ -1,0 +1,455 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "name": "MED'OC",
+      "status": {
+        "id": 30,
+        "name": "release",
+        "label": "livré"
+      },
+      "description": "Projet de Développement de logiciel Medical MED'OC",
+      "enabled": true,
+      "view_state": {
+        "id": 50,
+        "name": "private",
+        "label": "privé"
+      },
+      "access_level": {
+        "id": 70,
+        "name": "manager",
+        "label": "gestionnaire"
+      },
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Sprint",
+          "type": "list",
+          "default_value": "",
+          "possible_values": "",
+          "valid_regexp": "",
+          "length_min": 0,
+          "length_max": 0,
+          "access_level_r": {
+            "id": 55,
+            "name": "developer",
+            "label": "développeur"
+          },
+          "access_level_rw": {
+            "id": 55,
+            "name": "developer",
+            "label": "développeur"
+          },
+          "display_report": false,
+          "display_update": false,
+          "display_resolved": false,
+          "display_closed": false,
+          "require_report": false,
+          "require_update": false,
+          "require_resolved": false,
+          "require_closed": false
+        }
+      ],
+      "categories": [
+        {
+          "id": 2,
+          "name": "AGENDA",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 105,
+          "name": "ANALYSE",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 81,
+          "name": "ANTECEDENT",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 6,
+          "name": "BCB / VIDAL",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 106,
+          "name": "CARTE VITALE",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 10,
+          "name": "COURRIER",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 11,
+          "name": "DOSSIER",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 8,
+          "name": "EMAILS",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 45,
+          "name": "FACTURATION",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 7,
+          "name": "HPRIM",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 71,
+          "name": "INFORMATIONS",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 73,
+          "name": "INITIALISATION",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 5,
+          "name": "MEDOC (ne pas utiliser cette catégorie)",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 65,
+          "name": "MESSAGERIE",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          },
+          "default_handler": {
+            "id": 29,
+            "name": "maksoy"
+          }
+        },
+        {
+          "id": 33,
+          "name": "MMG",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 37,
+          "name": "MODULE KLIGO",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 35,
+          "name": "MonDocteur",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 63,
+          "name": "MULTISITE",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          },
+          "default_handler": {
+            "id": 21,
+            "name": "lmagni",
+            "real_name": "Lorenzo Magni",
+            "email": "lorenzo.magni@adsion.fr"
+          }
+        },
+        {
+          "id": 61,
+          "name": "OPLUS",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          },
+          "default_handler": {
+            "id": 21,
+            "name": "lmagni",
+            "real_name": "Lorenzo Magni",
+            "email": "lorenzo.magni@adsion.fr"
+          }
+        },
+        {
+          "id": 43,
+          "name": "OUTILS",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 77,
+          "name": "PACKAGE",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 79,
+          "name": "PARAMETRAGE",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 59,
+          "name": "PASSERELLE",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          },
+          "default_handler": {
+            "id": 43,
+            "name": "hlangenbronn"
+          }
+        },
+        {
+          "id": 9,
+          "name": "SMS",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          },
+          "default_handler": {
+            "id": 21,
+            "name": "lmagni",
+            "real_name": "Lorenzo Magni",
+            "email": "lorenzo.magni@adsion.fr"
+          }
+        },
+        {
+          "id": 3,
+          "name": "SV-MEDOC",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          },
+          "default_handler": {
+            "id": 31,
+            "name": "cverdureau"
+          }
+        },
+        {
+          "id": 41,
+          "name": "TELESERVICES",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        },
+        {
+          "id": 75,
+          "name": "VISITE",
+          "project": {
+            "id": 1,
+            "name": "MED'OC"
+          }
+        }
+      ],
+      "subProjects": [
+        {
+          "id": 19,
+          "name": "UrgenceMED"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "UrgenceMED",
+      "status": {
+        "id": 10,
+        "name": "development",
+        "label": "développement"
+      },
+      "description": "Composant Externe Urgencemed intégré dans Med'Oc",
+      "enabled": true,
+      "view_state": {
+        "id": 10,
+        "name": "public",
+        "label": "public"
+      },
+      "access_level": {
+        "id": 70,
+        "name": "manager",
+        "label": "gestionnaire"
+      },
+      "custom_fields": [],
+      "versions": [
+        {
+          "id": 371,
+          "name": "2.1.0.2",
+          "description": "",
+          "released": true,
+          "obsolete": true,
+          "timestamp": "2023-01-31T11:12:00+01:00"
+        },
+        {
+          "id": 369,
+          "name": "2.1.0.1",
+          "description": "",
+          "released": true,
+          "obsolete": true,
+          "timestamp": "2023-01-31T10:58:00+01:00"
+        },
+        {
+          "id": 357,
+          "name": "2.0.1.2",
+          "description": "",
+          "released": true,
+          "obsolete": true,
+          "timestamp": "2022-12-30T15:34:00+01:00"
+        }
+      ],
+      "categories": [
+        {
+          "id": 97,
+          "name": "CONSTANTE",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 87,
+          "name": "IDEL",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 85,
+          "name": "LABO",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 83,
+          "name": "ORDONNANCES",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 93,
+          "name": "ORTHO",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 101,
+          "name": "PARAMETRAGE",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 91,
+          "name": "PHARMA",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 67,
+          "name": "PLAN DE SOIN",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 99,
+          "name": "POSTGRE",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 89,
+          "name": "PSAD",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 103,
+          "name": "SIGNATURE",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        },
+        {
+          "id": 95,
+          "name": "SYNTHESE",
+          "project": {
+            "id": 19,
+            "name": "UrgenceMED"
+          }
+        }
+      ]
+    }
+  ]
+}

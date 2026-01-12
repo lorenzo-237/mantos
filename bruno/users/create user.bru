@@ -1,0 +1,23 @@
+meta {
+  name: create user
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3076/users
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MCwiaWF0IjoxNzEwOTI3NTI0fQ.kntkAt3dbVyGUxqBp_XWNJdZcy1NyxjkPxD8QdZ4M3A
+}
+
+body:json {
+  {
+    "username": "lmagni",
+    "password": "lmagni",
+    "token": "4ctb35i8a-2wAYHVNaipAnqghPkdb2lW"
+  }
+}

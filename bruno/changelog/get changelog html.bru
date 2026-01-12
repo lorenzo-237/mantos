@@ -1,0 +1,22 @@
+meta {
+  name: get changelog html
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3076/changelogs/html?project_id=1&fixed_in_version=2.4.3.168
+  body: json
+  auth: none
+}
+
+query {
+  project_id: 1
+  fixed_in_version: 2.4.3.168
+}
+
+body:json {
+  {
+    "htmlHeader": "<h1 id='note-de-version-243164'>Note de version 2.4.3.164</h1><div class='info'><ul style='list-style: none; margin:0; padding:0;'><li><strong>timestamp:</strong>23/02/2024 11:21</li><li><strong>composant_sv</strong>3.0.0.86</li><li><strong>fsv</strong>fsv-1.40.1408_x86.msi</li><li><strong>galss</strong>galss-3.45.01.exe</li><li><strong>cryptolib</strong>CryptolibCPS-5.1.7.exe</li><li><strong>atsam</strong>atsam-4.61.01.exe</li><li><strong>tbl_ccam</strong>73100</li><li><strong>tbl_reglementaire</strong>94</li><li><strong>hfsql</strong>260101</li><ul></div>"
+  }
+}

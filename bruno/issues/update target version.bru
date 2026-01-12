@@ -1,0 +1,22 @@
+meta {
+  name: update target version
+  type: http
+  seq: 6
+}
+
+patch {
+  url: http://localhost:3076/issues/2458
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "target_version": {
+      "name": "2.4.3.172"
+    },
+    "status": {
+      "name": "assigned"
+    }
+  }
+}

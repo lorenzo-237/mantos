@@ -1,0 +1,20 @@
+meta {
+  name: update status
+  type: http
+  seq: 5
+}
+
+patch {
+  url: http://localhost:3076/issues/2458
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": {
+      "name": "assigned"
+    },
+    "notes": []
+  }
+}

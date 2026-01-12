@@ -1,0 +1,17 @@
+meta {
+  name: update user
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/users
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "theme":"Sombre"
+  }
+}

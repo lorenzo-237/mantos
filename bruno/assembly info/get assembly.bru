@@ -1,0 +1,16 @@
+meta {
+  name: get assembly
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/assembly?project_id=1&version=2.7.3.10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  project_id: 1
+  version: 2.7.3.10
+}

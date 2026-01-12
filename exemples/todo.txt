@@ -1,0 +1,28 @@
+# Se rendre dans le dossier build
+
+cd build
+
+# Installer les dépendances
+
+npm install --only=production --ignore-scripts
+npm run generate
+npm rebuild
+
+# Installer PM2 si pas déjà installé
+
+// -g pour l'installer globalement
+npm install -g pm2 
+
+# Se rendre dans le dossier conf
+
+cd ../conf
+
+pm2 start ecosystem.config.js
+
+pm2 save cette commande va sauvegarder la liste des process en cours
+
+## UTILE
+
+pm2 startup => cette commande va indiquer à pm2 de démarrer automatiquement en cas de reboot du système
+
+pm2 ls => lister les processus en cours

@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "name": "mantis-api",
+  "type": "collection",
+  "presets": {
+    "requestType": "http",
+    "requestUrl": "{{baseUrl}}"
+  },
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "size": 0.009202003479003906,
+  "filesCount": 32
+}

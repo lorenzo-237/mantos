@@ -1,0 +1,17 @@
+meta {
+  name: verify
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3076/users/verify
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "mantisToken": "123"
+  }
+}

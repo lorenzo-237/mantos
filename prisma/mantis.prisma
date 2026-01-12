@@ -1,0 +1,198 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/mantis-cli"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Issue {
+  id                Int               @id @default(autoincrement()) @db.UnsignedInt
+  project_id        Int               @db.UnsignedInt
+  reporter_id       Int?              @db.UnsignedInt
+  reporter          UserTable?        @relation(fields: [reporter_id], references: [id], name: "reported")
+  handler_id        Int?              @db.UnsignedInt
+  handler           UserTable?        @relation(fields: [handler_id], references: [id], name: "handler")
+  duplicate_id      Int               @db.UnsignedInt
+  priority          Int               @db.SmallInt
+  severity          Int               @db.SmallInt
+  reproducibility   Int               @db.SmallInt
+  status            Int               @db.SmallInt
+  resolution        Int               @db.SmallInt
+  projection        Int               @db.SmallInt
+  eta               Int               @db.SmallInt
+  bug_text_id       Int               @unique @db.UnsignedInt
+  bugText           BugText           @relation(fields: [bug_text_id], references: [id])
+  os                String            @db.VarChar(32)
+  os_build          String            @db.VarChar(32)
+  platform          String            @db.VarChar(32)
+  version           String            @db.VarChar(64)
+  fixed_in_version  String            @db.VarChar(64)
+  build             String            @db.VarChar(32)
+  profile_id        Int               @db.UnsignedInt
+  view_state        Int               @db.SmallInt
+  summary           String            @db.VarChar(128)
+  sponsorship_total Int
+  sticky            Int
+  target_version    String            @db.VarChar(64)
+  category          Category          @relation(fields: [category_id], references: [id])
+  category_id       Int               @db.UnsignedInt
+  date_submitted    Int               @db.UnsignedInt
+  due_date          Int               @db.UnsignedInt
+  last_updated      Int               @db.UnsignedInt
+  sequence          Int               @db.UnsignedInt
+  tags              BugTag[]
+  source_relations  BugRelationShip[] @relation(name: "fk_source_relation")
+  dest_relations    BugRelationShip[] @relation(name: "fk_dest_relation")
+
+  @@map("mantis_bug_table")
+}
+
+model Category {
+  id         Int     @id @db.UnsignedInt
+  project_id Int     @db.UnsignedInt
+  user_id    Int     @db.UnsignedInt
+  name       String  @db.VarChar(128)
+  status     Int     @db.UnsignedInt
+  issues     Issue[]
+
+  @@map("mantis_category_table")
+}
+
+model Version {
+  id          Int     @id @default(autoincrement())
+  project_id  Int     @db.UnsignedInt
+  version     String  @db.VarChar(64)
+  description String  @db.VarChar(64)
+  released    Boolean
+  obsolete    Boolean
+  date_order  Int     @db.UnsignedInt
+
+  @@map("mantis_project_version_table")
+}
+
+model UserTable {
+  id                          Int              @id @db.UnsignedInt
+  username                    String           @db.VarChar(191)
+  realname                    String           @db.VarChar(191)
+  email                       String           @db.VarChar(191)
+  password                    String           @db.VarChar(64)
+  enabled                     Int
+  protected                   Int
+  access_level                Int              @db.SmallInt
+  login_count                 Int
+  lost_password_request_count Int              @db.SmallInt
+  failed_login_count          Int              @db.SmallInt
+  cookie_string               String           @db.VarChar(64)
+  last_visit                  Int              @db.UnsignedInt
+  date_created                Int              @db.UnsignedInt
+  reported_issues             Issue[]          @relation("reported")
+  handled_issues              Issue[]          @relation("handler")
+  projects                    ProjetUserList[]
+  reported_bug_notes          BugNoteTable[]
+
+  @@map("mantis_user_table")
+}
+
+model BugText {
+  id                     Int    @id @default(autoincrement()) @db.UnsignedInt
+  description            String @db.LongText
+  steps_to_reproduce     String @db.LongText
+  additional_information String @db.LongText
+  issue                  Issue?
+
+  @@map("mantis_bug_text_table")
+}
+
+model Tag {
+  id           Int      @id @db.UnsignedInt
+  user_id      Int      @db.UnsignedInt
+  name         String   @db.VarChar(100)
+  description  String   @db.LongText
+  date_created Int      @db.UnsignedInt
+  date_updated Int      @db.UnsignedInt
+  issues       BugTag[]
+
+  @@map("mantis_tag_table")
+}
+
+model BugTag {
+  bug_id        Int
+  bug           Issue @relation(fields: [bug_id], references: [id])
+  tag_id        Int
+  tag           Tag   @relation(fields: [tag_id], references: [id])
+  user_id       Int
+  date_attached Int   @db.UnsignedInt
+
+  @@unique([bug_id, tag_id])
+  @@map("mantis_bug_tag_table")
+}
+
+model ProjetUserList {
+  project_id   Int       @db.UnsignedInt
+  user_id      Int       @db.UnsignedInt
+  user         UserTable @relation(fields: [user_id], references: [id])
+  access_level Int
+
+  @@unique([project_id, user_id])
+  @@map("mantis_project_user_list_table")
+}
+
+model BugRelationShip {
+  id                 Int   @id @default(autoincrement()) @db.UnsignedInt
+  source_bug_id      Int   @db.UnsignedInt
+  source             Issue @relation(fields: [source_bug_id], references: [id], name: "fk_source_relation")
+  destination_bug_id Int   @db.UnsignedInt
+  destination        Issue @relation(fields: [destination_bug_id], references: [id], name: "fk_dest_relation")
+  relationship_type  Int
+
+  @@map("mantis_bug_relationship_table")
+}
+
+model BugNoteTextTable {
+  id        Int            @id @default(autoincrement()) @db.UnsignedInt
+  note      String         @db.LongText
+  bug_notes BugNoteTable[]
+
+  @@map("mantis_bugnote_text_table")
+}
+
+model BugNoteTable {
+  id              Int              @id @default(autoincrement()) @db.UnsignedInt
+  bug_id          Int              @db.UnsignedInt
+  reporter_id     Int?             @db.UnsignedInt
+  reporter        UserTable?       @relation(fields: [reporter_id], references: [id])
+  bugnote_text_id Int              @db.UnsignedInt
+  bugnote_text    BugNoteTextTable @relation(fields: [bugnote_text_id], references: [id])
+  view_state      Int              @db.UnsignedInt
+  note_type       Int              @db.UnsignedInt
+  note_attr       String
+  time_tracking   Int              @db.UnsignedInt
+  last_modified   Int              @db.UnsignedInt
+  date_submitted  Int              @db.UnsignedInt
+
+  @@map("mantis_bugnote_table")
+}
+
+model ProjectMantisTable {
+  id             Int     @id @default(autoincrement()) @db.UnsignedInt
+  name           String  @unique @db.VarChar(128)
+  status         Int     @db.SmallInt
+  enabled        Int     @db.TinyInt
+  view_state     Int     @db.SmallInt
+  access_min     Int     @db.SmallInt
+  file_path      String? @db.VarChar(250)
+  description    String? @db.LongText
+  category_id    Int     @db.UnsignedInt
+  inherit_global Int     @db.TinyInt
+
+  @@map("mantis_project_table")
+}

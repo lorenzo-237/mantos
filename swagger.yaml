@@ -1,0 +1,505 @@
+swagger: '2.0'
+info:
+  title: Votre API
+  description: Description de votre API
+  version: 1.0.0
+host: api.monsite.com
+schemes:
+  - http
+  - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"'
+paths:
+  /tests:
+    get:
+      summary: Retourne un message HelloWorld
+      tags:
+        - Tests
+      responses:
+        200:
+          description: Succès
+          schema:
+            type: string
+
+  /auth/login:
+    post:
+      summary: Authentification de l'utilisateur
+      tags:
+        - Auth
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/LogInDto'
+      responses:
+        200:
+          description: Succès
+  /auth/admin/token:
+    post:
+      summary: Récupère un token d'admin
+      tags:
+        - Auth
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/LogInDto'
+      responses:
+        200:
+          description: Succès
+  /auth/admin/test:
+    get:
+      summary: Test du middleware admin
+      tags:
+        - Auth
+      responses:
+        200:
+          description: Succès
+
+  /issues:
+    get:
+      summary: Récupère tous les issues
+      tags:
+        - Issues
+      parameters:
+        - name: project_id
+          in: query
+          required: true
+          type: integer
+          description: Identifiant du projet
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Liste des issues
+    post:
+      summary: Crée un nouvel issue
+      tags:
+        - Issues
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/CreateIssueDto'
+      responses:
+        201:
+          description: Issue créé
+  /issues/{issue_id}:
+    get:
+      summary: Récupère un issue par ID
+      tags:
+        - Issues
+      security:
+        - Bearer: []
+      parameters:
+        - name: issue_id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Succès
+    patch:
+      summary: Met à jour un issue par ID
+      tags:
+        - Issues
+      security:
+        - Bearer: []
+      parameters:
+        - name: issue_id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/UpdateIssueDto'
+      responses:
+        200:
+          description: Issue mis à jour
+  /issues/{issue_id}/files/{file_id}:
+    get:
+      summary: Récupère les fichiers d'un issue
+      tags:
+        - Issues
+      security:
+        - Bearer: []
+      parameters:
+        - name: issue_id
+          in: path
+          required: true
+          type: string
+        - name: file_id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Fichiers récupérés
+  /issues/{issue_id}/tags:
+    post:
+      summary: Attache un tag à un issue
+      tags:
+        - Issues
+      security:
+        - Bearer: []
+      parameters:
+        - name: issue_id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/AttachTagsDto'
+      responses:
+        200:
+          description: Tag attaché
+
+  /projects:
+    get:
+      summary: Récupère tous les projets
+      tags:
+        - Projects
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Liste des projets
+  /projects/{project_id}/users:
+    get:
+      summary: Récupère les utilisateurs d'un projet
+      tags:
+        - Projects
+      security:
+        - Bearer: []
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Liste des utilisateurs
+  /projects/{project_id}/versions:
+    get:
+      summary: Récupère les versions d'un projet
+      tags:
+        - Projects
+      security:
+        - Bearer: []
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Liste des versions
+    post:
+      summary: Crée une nouvelle version de projet
+      tags:
+        - Projects
+      security:
+        - Bearer: []
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/NewVersionDto'
+      responses:
+        201:
+          description: Version créée
+  /projects/{project_id}/versions/{version_id}:
+    patch:
+      summary: Met à jour une version de projet
+      tags:
+        - Projects
+      security:
+        - Bearer: []
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          type: string
+        - name: version_id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/UpdateVersionDto'
+      responses:
+        200:
+          description: Version mise à jour
+  /projects/{project_id}/filters:
+    get:
+      summary: Récupère les filtres d'un projet
+      tags:
+        - Projects
+      security:
+        - Bearer: []
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Liste des filtres
+  /projects/{project_id}/categories:
+    get:
+      summary: Récupère les catégories d'un projet
+      tags:
+        - Projects
+      security:
+        - Bearer: []
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Liste des catégories
+
+  /tags:
+    get:
+      summary: Récupère tous les tags
+      tags:
+        - Tags
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Liste des tags
+
+  /users/me:
+    get:
+      summary: Récupère les informations de l'utilisateur connecté
+      tags:
+        - Users
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Informations de l'utilisateur
+  /users/verify:
+    post:
+      summary: Vérifie le token de l'utilisateur
+      tags:
+        - Users
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/VerifyTokenDto'
+      responses:
+        200:
+          description: Token vérifié
+  /users:
+    post:
+      summary: Crée un nouvel utilisateur
+      tags:
+        - Users
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/CreateUserDto'
+      responses:
+        201:
+          description: Utilisateur créé
+definitions:
+  LogInDto:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      ldap:
+        type: boolean
+    required:
+      - username
+      - password
+      - ldap
+  UpdateIssueDto:
+    type: object
+    properties:
+      fixed_in_version:
+        type: object
+        properties:
+          name:
+            type: string
+      target_version:
+        type: object
+        properties:
+          name:
+            type: string
+      status:
+        type: object
+        properties:
+          id:
+            type: integer
+            enum: [50, 60, 55, 80, 90]
+      notes:
+        type: array
+        items:
+          type: string
+  AttachTagsDto:
+    type: object
+    properties:
+      tags:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+    required:
+      - tags
+  _VersionIssue:
+    type: object
+    properties:
+      current:
+        type: string
+      target:
+        type: string
+      fixed:
+        type: string
+  TagIssue:
+    type: object
+    properties:
+      id:
+        type: integer
+  RelationShipIssue:
+    type: object
+    properties:
+      issue_id:
+        type: integer
+      relationship_type:
+        type: integer
+      is_source:
+        type: boolean
+  CreateIssueDto:
+    type: object
+    properties:
+      summary:
+        type: string
+      description:
+        type: string
+      steps:
+        type: string
+      additional_information:
+        type: string
+      project_id:
+        type: integer
+        minimum: 1
+      status_id:
+        type: integer
+        enum: [50, 55, 60, 80, 90]
+      category_id:
+        type: integer
+        minimum: 1
+      handler_id:
+        type: integer
+        minimum: 1
+      priority_id:
+        type: integer
+        enum: [10, 20, 30, 40, 50, 60]
+      severity_id:
+        type: integer
+        enum: [10, 20, 30, 40, 50, 60, 70, 80]
+      reproducibility_id:
+        type: integer
+        enum: [10, 30, 50, 70, 90, 100]
+      version:
+        $ref: '#/definitions/_VersionIssue'
+      tags:
+        type: array
+        items:
+          $ref: '#/definitions/TagIssue'
+      relations:
+        type: array
+        items:
+          $ref: '#/definitions/RelationShipIssue'
+      files:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            content:
+              type: string
+    required:
+      - summary
+      - description
+      - project_id
+      - status_id
+      - category_id
+      - priority_id
+      - severity_id
+      - reproducibility_id
+      - version
+  VerifyTokenDto:
+    type: object
+    properties:
+      mantisToken:
+        type: string
+    required:
+      - mantisToken
+  CreateUserDto:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      token:
+        type: string
+    required:
+      - username
+      - password
+      - token
+  NewVersionDto:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      released:
+        type: boolean
+      obsolete:
+        type: boolean
+    required:
+      - name
+      - description
+      - released
+      - obsolete
+  UpdateVersionDto:
+    type: object
+    properties:
+      released:
+        type: boolean
+      timestamp:
+        type: number
+      obsolete:
+        type: boolean
+security:
+  - Bearer: []

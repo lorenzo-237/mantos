@@ -1,0 +1,18 @@
+meta {
+  name: new project
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/projects
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Blast",
+    "description": "Gestionnaire de tickets mantis qui manipule l'API blaster"
+  }
+}
